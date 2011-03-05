@@ -10,14 +10,20 @@ $BASEDIR = Config::get('basedir');
  * ========================================================================================
  */
 
-//remove double slash and force final slash
-if(preg_match("/\/\/+/", full_url()) || !preg_match("/\/$/", full_url())){
-  header( "Location: http://".trim(preg_replace("/\/\/+/", "/", full_url()), "/")."/", true, 301);
+//remove double slash and force final slash and remove home in url
+if(preg_match("/\/\/+/", full_url()) || !preg_match("/\/$/", full_url()) || preg_match("/home/", full_url())){
+  header( "Location: http://".trim(preg_replace("/\/\/+/", "/", preg_replace("/home/", "", full_url())), "/")."/", true, 301);
   exit();
 }
 
-$url_parts = explode($BASEDIR, full_url());
+$delimeter = $BASEDIR;
+if($delimeter == ""){
+  $delimeter = ".com";
+}
+
+$url_parts = explode($delimeter, full_url());
 $url_array = explode("/", trim($url_parts[1], "/"));
+
 /**
  * @todo: support child pages
  */
@@ -40,6 +46,18 @@ if(!$page = $db->getRows()){
 }
 $page = $page[0];
 
+
+//redirect stuff
+if(strlen($page['redirect'])>1){
+  $redirect = "Location: $page[redirect]";
+  header($redirect); exit();
+}
+
+//BASEDIR Stuff
+foreach($page as $k=>$v){
+  $page[$k] = preg_replace("/__BASEDIR__/", $BASEDIR, $v);
+}
+
 //we're all good
 header("HTTP/1.0 200 OK");
 
@@ -59,14 +77,14 @@ echo<<<HEADER
     <meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1"> 
     <meta name="keywords" content=""> 
     <meta name="description" content=""> 
-    <script type="text/javascript" src="$BASEDIR/scripts/jquery-1.4.4.min.js"></script> 
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script> 
     <style type="text/css" media="screen">@import "$BASEDIR/styles/reset.css";</style> 
     <style type="text/css" media="screen">@import "$BASEDIR/styles/style.css";</style> 
     <link rel="shortcut icon" href="$BASEDIR/favicon.ico">
 
 HEADER;
 
-//only include GA code on production
+//only include Google Analytics code on production
 if($Config->whereAmI() == 'production'){
   echo<<<GA
   
@@ -74,16 +92,28 @@ if($Config->whereAmI() == 'production'){
 GA;
 }
 
-echo<<<END_HEADER
+echo<<<BODY
   </head> 
-  <body>
+  <body class="$page[template]">
+    <div id="container">
+      <div id="header">
+        <div id="logo"><a href="$BASEDIR/"><img src="$BASEDIR/images/template/main-logo.png" alt="Customer Name"></a></div>
+          <ul id="nav">
 
-    <div id="header">
-      Header
+BODY;
 
-    </div>
+$db = Database::getDatabase(); 
+$db->query("SELECT * FROM pages WHERE parent_id is null and visible='1' order by sort");
+foreach($db->getRows() as $nav_item){
+  $active = $nav_item['id'] == $page['id'] ? " class='active'" : "";
+  echo "          <li$active><a href=\"$BASEDIR/$nav_item[url]/\">$nav_item[nav_title]</a></li>\n";
+}
 
-END_HEADER;
+echo<<<HEADER
+        </ul>
+      </div><!-- #header -->
+
+HEADER;
 
 
 /**
@@ -93,14 +123,14 @@ END_HEADER;
  */
 
 echo<<<TEMPLATE_HEAD
-    <div id="content" class="$page[template]">
+      <div id="content" class="$page[template]">
 
 TEMPLATE_HEAD;
 
 include("templates/".$page['template'].".php");
 
 echo<<<TEMPLATE_FOOT
-    </div>
+      </div>
 
 TEMPLATE_FOOT;
 
@@ -109,17 +139,17 @@ TEMPLATE_FOOT;
  * Footer
  * ========================================================================================
  */
+ $year = date("Y");
  
 echo<<<FOOTER
-    <div id="footer">
-      Footer
+      <div id="footer">
+        Copyright &copy; $year Customer Name. All rights reserved.
 
-    </div>
-
+      </div><!-- #footer -->
+    </div><!-- #container -->
   </body>
 </html>
 
 FOOTER;
-
 
 ?>

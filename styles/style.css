@@ -1,29 +1,136 @@
+
+/*
+ Color Scheme:
+  Dark Blue: #00235D;
+  Light Blue: #91CFEF;
+  Teal: #046380;
+  
+  Text: #000;
+ 
+*/
+
+html,body{margin:0;padding:0;text-align: center;}
+p, h1, h2, h3, h4, a, li, ul, ol, span, table, form, div{ text-align: left; }
+
+*:focus{
+  border: 0;
+}
+
 body{
-  background-color: #eee;
-  color: #555;
-  font-family:Helvetica, Arial, sans-serif;
+  background-color: #fff;
+  background-image: url('../images/template/background.jpg');
+  background-repeat: repeat-x;
+  background-position: 0 0;
+  color: #000;
+  font-family: Helvetica, Arial, sans-serif;
   font-size: 12px;
+  line-height: 16px;
+}
+
+
+.black{
+  color: #000;
 }
 
 h1, h2, h3, h4, h5{
-  font-weight:bold;
-  margin-bottom:5px;
+  font-weight: normal;
+  margin: 20px 0 5px;
+  color: #046380;
+}
+
+h1{
+  font-size: 27px;
+}
+
+h2{
+  font-size: 17px;
+}
+
+a:link, a:visited{
+  text-decoration: none;
+  color: #046380;
+}
+
+a:hover{
+  color: #91CFEF;
+}
+
+a img{
+  border: 0;
+}
+
+p{
+  margin: 10px 0 15px 0;
+}
+
+.clear{
+  clear: both;
+}
+
+#container{
+  position: relative;
+  background-color: transparent;
+  width: 1000px;
+  margin: 0 auto;
 }
 
 #header{
-  margin: 20px;
-  padding: 20px;
-  border: 3px solid #555;
+  position: relative;
+  margin: 0;
+  padding: 0;
+  height: 150px;
 }
 
 #footer{
-  margin: 20px;
-  padding: 20px;
-  border: 3px solid #555;
+  position: relative;
+  margin: 0 0 25px 0;
+  padding: 20px 20px 20px 0;
+  border-top: 5px solid #046380;
 }
 
 #content{
-  margin: 20px;
-  padding: 20px;
-  border: 3px solid #555;
+  position: relative;
+  margin: 0 0 20px 0;
+  padding: 0;
+  min-height: 500px;
 }
+
+#nav{
+  font-size: 14px;
+  position: absolute;
+  bottom: 4px;
+  left: 0;
+}
+
+#nav li{
+  display: inline-block;
+  padding: 6px 0 0 0;
+  margin: 0;
+  background-image: url('../images/template/tabs.png');
+  background-repeat: no-repeat;
+  width: 120px;
+  height: 22px;
+  text-align: center;
+  zoom: 1;
+	*display:inline;
+}
+
+#nav li:hover, #nav li.active{
+
+}
+
+#nav li a{
+  color: #00235D;
+}
+
+#nav li:hover a, #nav li.active a{
+  color: #046380;
+}
+
+#logo{
+  width: 300px;
+  position: absolute;
+  top: 10px;
+  left: 0;
+}
+
