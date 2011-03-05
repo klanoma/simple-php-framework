@@ -1,7 +1,0 @@
-<IfModule mod_rewrite.c>
-RewriteEngine On
-ErrorDocument 404 /skel/index.php
-</IfModule>
-
-DirectoryIndex /skel/index.php
-

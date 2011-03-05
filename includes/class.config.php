@@ -13,9 +13,9 @@
         private static $me;
 
         // Add your server hostnames to the appropriate arrays. ($_SERVER['HTTP_HOST'])
-        private $productionServers = array('/^ninjacrane\.com$/');
-        private $stagingServers    = array('/^dev.ninjacrane\.com$/');
-        private $localServers      = array('/^localhost$/');
+        private $productionServers = array('/^site\.com$/');
+        private $stagingServers    = array('/^dev.site\.com$/');
+        private $localServers      = array('/^(localhost)|(ubuntu)$/');
 
         // Standard Config Options...
 
@@ -103,7 +103,7 @@
             $this->dbOnError       = '';
             $this->dbEmailOnError  = false;
             $this->useDBSessions = false;
-            $this->basedir = "/";
+            $this->basedir = "";
         }
 
         // Add code/variables to be run only on staging servers
@@ -124,7 +124,7 @@
             $this->dbOnError       = 'die';
             $this->dbEmailOnError  = false;
             $this->useDBSessions = true;
-            $this->basedir = "/";
+            $this->basedir = "";
         }
 
         // Add code/variables to be run only on local (testing) servers

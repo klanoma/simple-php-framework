@@ -66,12 +66,12 @@ echo<<<HEADER
 
 HEADER;
 
-if($BASEDIR -= "/"){
-echo<<<GOOOGLE_ANALYTICS
-
-
-
-GOOOGLE_ANALYTICS;
+//only include GA code on production
+if($Config->whereAmI() == 'production'){
+  echo<<<GA
+  
+ 
+GA;
 }
 
 echo<<<END_HEADER
