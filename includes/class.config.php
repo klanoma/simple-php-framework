@@ -6,15 +6,16 @@
     // options depending on the server environment you're running on. Ex: local, staging,
     // and production.
 
+
     class Config
     {
         // Singleton object. Leave $me alone.
         private static $me;
 
         // Add your server hostnames to the appropriate arrays. ($_SERVER['HTTP_HOST'])
-        private $productionServers = array('/^your-domain\.com$/');
-        private $stagingServers    = array();
-        private $localServers      = array();
+        private $productionServers = array('/^site\.com$/');
+        private $stagingServers    = array('/^dev.site\.com$/');
+        private $localServers      = array('/^(localhost)|(ubuntu)$/');
 
         // Standard Config Options...
 
@@ -36,6 +37,8 @@
 
         // Add your config options here...
         public $useDBSessions; // Set to true to store sessions in the database
+        
+        public $basedir;
 
         // Singleton constructor
         private function __construct()
@@ -92,13 +95,15 @@
 
             $this->dbReadHost      = 'localhost';
             $this->dbWriteHost     = 'localhost';
-            $this->dbName          = '';
-            $this->dbReadUsername  = '';
-            $this->dbWriteUsername = '';
-            $this->dbReadPassword  = '';
-            $this->dbWritePassword = '';
+            $this->dbName          = 'gotwilly_nc';
+            $this->dbReadUsername  = 'gotwilly_nc';
+            $this->dbWriteUsername = 'gotwilly_nc';
+            $this->dbReadPassword  = 'm3z2aUMHNMCDXhb3';
+            $this->dbWritePassword = 'm3z2aUMHNMCDXhb3';
             $this->dbOnError       = '';
             $this->dbEmailOnError  = false;
+            $this->useDBSessions = false;
+            $this->basedir = "";
         }
 
         // Add code/variables to be run only on staging servers
@@ -111,13 +116,15 @@
 
             $this->dbReadHost      = 'localhost';
             $this->dbWriteHost     = 'localhost';
-            $this->dbName          = '';
-            $this->dbReadUsername  = '';
-            $this->dbWriteUsername = '';
-            $this->dbReadPassword  = '';
-            $this->dbWritePassword = '';
+            $this->dbName          = 'gotwilly_nc';
+            $this->dbReadUsername  = 'gotwilly_nc';
+            $this->dbWriteUsername = 'gotwilly_nc';
+            $this->dbReadPassword  = 'm3z2aUMHNMCDXhb3';
+            $this->dbWritePassword = 'm3z2aUMHNMCDXhb3';
             $this->dbOnError       = 'die';
             $this->dbEmailOnError  = false;
+            $this->useDBSessions = true;
+            $this->basedir = "";
         }
 
         // Add code/variables to be run only on local (testing) servers
@@ -130,32 +137,15 @@
 
             $this->dbReadHost      = 'localhost';
             $this->dbWriteHost     = 'localhost';
-            $this->dbName          = '';
-            $this->dbReadUsername  = '';
-            $this->dbWriteUsername = '';
-            $this->dbReadPassword  = '';
-            $this->dbWritePassword = '';
+            $this->dbName          = 'gotwilly_nc';
+            $this->dbReadUsername  = 'gotwilly_nc';
+            $this->dbWriteUsername = 'gotwilly_nc';
+            $this->dbReadPassword  = 'm3z2aUMHNMCDXhb3';
+            $this->dbWritePassword = 'm3z2aUMHNMCDXhb3';
             $this->dbOnError       = 'die';
             $this->dbEmailOnError  = false;
-        }
-
-        // Add code/variables to be run only on when script is launched from the shell
-        private function shell()
-        {
-            ini_set('display_errors', '1');
-            ini_set('error_reporting', E_ALL);
-
-            define('WEB_ROOT', '');
-
-            $this->dbReadHost      = 'localhost';
-            $this->dbWriteHost     = 'localhost';
-            $this->dbName          = '';
-            $this->dbReadUsername  = '';
-            $this->dbWriteUsername = '';
-            $this->dbReadPassword  = '';
-            $this->dbWritePassword = '';
-            $this->dbOnError       = false;
-            $this->dbEmailOnError  = true;
+            $this->useDBSessions = true;
+            $this->basedir = "/skel";
         }
 
         public function whereAmI()

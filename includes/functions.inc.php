@@ -57,7 +57,8 @@
         $s = empty($_SERVER['HTTPS']) ? '' : ($_SERVER['HTTPS'] == 'on') ? 's' : '';
         $protocol = substr(strtolower($_SERVER['SERVER_PROTOCOL']), 0, strpos(strtolower($_SERVER['SERVER_PROTOCOL']), '/')) . $s;
         $port = ($_SERVER['SERVER_PORT'] == '80') ? '' : (":".$_SERVER['SERVER_PORT']);
-        return $protocol . "://" . $_SERVER['HTTP_HOST'] . $port . $_SERVER['REQUEST_URI'];
+        //return $protocol . "://" . $_SERVER['HTTP_HOST'] . $port . $_SERVER['REQUEST_URI'];
+        return $_SERVER['HTTP_HOST'] . $port . $_SERVER['REQUEST_URI'];
     }
 
     // Returns an English representation of a past date within the last month
@@ -782,3 +783,14 @@
         $ext = pathinfo($filename, PATHINFO_EXTENSION);
         return isset($mime_types[$ext]) ? $mime_types[$ext] : $default;
     }
+
+    // echos formatted array for debugging
+    function pre($arr){
+    	if (is_array($arr)){
+    		echo "<pre>".print_r($arr, 1)."</pre>";
+    	} else {
+    		echo "<pre>".$arr."</pre>";
+    	}
+    }
+
+?>

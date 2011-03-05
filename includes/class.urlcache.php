@@ -78,3 +78,5 @@
             return json_decode($str);
         }
     }
+
+?>
