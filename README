@@ -8,7 +8,7 @@ from the SPF, and I contributed the routing code (using .htaccess rewrite rules)
 pages database table, and templating scheme.
 
 Getting Started:
-  *  Create a database from db_dump.sql
+  *  Create a database from mysql.sql
   *  Put DB setting in includes/class.config.php
   *  Verify that .htaccess paths are correct for rewrite
   *  You're in!
