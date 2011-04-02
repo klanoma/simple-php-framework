@@ -12,8 +12,7 @@ $BASEDIR = Config::get('basedir');
 
 //remove double slash and force final slash and remove home in url
 if(preg_match("/\/\/+/", full_url()) || !preg_match("/\/$/", full_url()) || preg_match("/home/", full_url())){
-  header( "Location: http://".trim(preg_replace("/\/\/+/", "/", preg_replace("/home/", "", full_url())), "/")."/", true, 301);
-  exit();
+  redirect("http://".trim(preg_replace("/\/\/+/", "/", preg_replace("/home/", "", full_url())), "/")."/", 301);
 }
 
 $delimeter = $BASEDIR;

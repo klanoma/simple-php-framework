@@ -1,114 +1,90 @@
-<?PHP
-    function set_option($key, $val)
-    {
-        $db = Database::getDatabase();
-        $db->query('REPLACE INTO options (`key`, `value`) VALUES (:key:, :value:)', array('key' => $key, 'value' => $val));
-    }
+<?php
 
-    function get_option($key, $default = null)
-    {
-        $db = Database::getDatabase();
-        $db->query('SELECT `value` FROM options WHERE `key` = :key:', array('key' => $key));
-        if($db->hasRows())
-            return $db->getValue();
-        else
-            return $default;
-    }
+function printr($var)
+{
+  $output = print_r($var, true);
+  $output = str_replace("\n", "<br>", $output);
+  $output = str_replace(' ', '&nbsp;', $output);
+  echo "<div style='font-family:courier;'>$output</div>";
+}
 
-    function delete_option($key)
-    {
-        $db = Database::getDatabase();
-        $db->query('DELETE FROM options WHERE `key` = :key:', array('key' => $key));
-        return $db->affectedRows();
-    }
+// Formats a given number of seconds into proper mm:ss format
+function format_time($seconds)
+{
+  return floor($seconds / 60) . ':' . str_pad($seconds % 60, 2, '0');
+}
 
-    function printr($var)
-    {
-        $output = print_r($var, true);
-        $output = str_replace("\n", "<br>", $output);
-        $output = str_replace(' ', '&nbsp;', $output);
-        echo "<div style='font-family:courier;'>$output</div>";
-    }
+// Given a string such as "comment_123" or "id_57", it returns the final, numeric id.
+function split_id($str)
+{
+  return match('/[_-]([0-9]+)$/', $str, 1);
+}
 
-    // Formats a given number of seconds into proper mm:ss format
-    function format_time($seconds)
-    {
-        return floor($seconds / 60) . ':' . str_pad($seconds % 60, 2, '0');
-    }
+// Creates a friendly URL slug from a string
+function slugify($str)
+{
+  $str = preg_replace('/[^a-zA-Z0-9 -]/', '', $str);
+  $str = strtolower(str_replace(' ', '-', trim($str)));
+  $str = preg_replace('/-+/', '-', $str);
+  return $str;
+}
 
-    // Given a string such as "comment_123" or "id_57", it returns the final, numeric id.
-    function split_id($str)
-    {
-        return match('/[_-]([0-9]+)$/', $str, 1);
-    }
+// Computes the *full* URL of the current page (protocol, server, path, query parameters, etc)
+function full_url()
+{
+  $s = empty($_SERVER['HTTPS']) ? '' : ($_SERVER['HTTPS'] == 'on') ? 's' : '';
+  $protocol = substr(strtolower($_SERVER['SERVER_PROTOCOL']), 0, strpos(strtolower($_SERVER['SERVER_PROTOCOL']), '/')) . $s;
+  $port = ($_SERVER['SERVER_PORT'] == '80') ? '' : (":".$_SERVER['SERVER_PORT']);
+  return $_SERVER['HTTP_HOST'] . $port . $_SERVER['REQUEST_URI'];
+}
 
-    // Creates a friendly URL slug from a string
-    function slugify($str)
+// Returns an English representation of a past date within the last month
+// Graciously stolen from http://ejohn.org/files/pretty.js
+function time2str($ts)
+{
+  if(!ctype_digit($ts))
+    $ts = strtotime($ts);
+    $diff = time() - $ts;
+    if($diff == 0)
+      return 'now';
+      elseif($diff > 0)
     {
-        $str = preg_replace('/[^a-zA-Z0-9 -]/', '', $str);
-        $str = strtolower(str_replace(' ', '-', trim($str)));
-        $str = preg_replace('/-+/', '-', $str);
-        return $str;
+      $day_diff = floor($diff / 86400);
+      if($day_diff == 0)
+      {
+        if($diff < 60) return 'just now';
+        if($diff < 120) return '1 minute ago';
+        if($diff < 3600) return floor($diff / 60) . ' minutes ago';
+        if($diff < 7200) return '1 hour ago';
+        if($diff < 86400) return floor($diff / 3600) . ' hours ago';
+      }
+      if($day_diff == 1) return 'Yesterday';
+      if($day_diff < 7) return $day_diff . ' days ago';
+      if($day_diff < 31) return ceil($day_diff / 7) . ' weeks ago';
+      if($day_diff < 60) return 'last month';
+      $ret = date('F Y', $ts);
+      return ($ret == 'December 1969') ? '' : $ret;
     }
-
-    // Computes the *full* URL of the current page (protocol, server, path, query parameters, etc)
-    function full_url()
+    else
     {
-        $s = empty($_SERVER['HTTPS']) ? '' : ($_SERVER['HTTPS'] == 'on') ? 's' : '';
-        $protocol = substr(strtolower($_SERVER['SERVER_PROTOCOL']), 0, strpos(strtolower($_SERVER['SERVER_PROTOCOL']), '/')) . $s;
-        $port = ($_SERVER['SERVER_PORT'] == '80') ? '' : (":".$_SERVER['SERVER_PORT']);
-        //return $protocol . "://" . $_SERVER['HTTP_HOST'] . $port . $_SERVER['REQUEST_URI'];
-        return $_SERVER['HTTP_HOST'] . $port . $_SERVER['REQUEST_URI'];
-    }
-
-    // Returns an English representation of a past date within the last month
-    // Graciously stolen from http://ejohn.org/files/pretty.js
-    function time2str($ts)
+    $diff = abs($diff);
+    $day_diff = floor($diff / 86400);
+    if($day_diff == 0)
     {
-        if(!ctype_digit($ts))
-            $ts = strtotime($ts);
-
-        $diff = time() - $ts;
-        if($diff == 0)
-            return 'now';
-        elseif($diff > 0)
-        {
-            $day_diff = floor($diff / 86400);
-            if($day_diff == 0)
-            {
-                if($diff < 60) return 'just now';
-                if($diff < 120) return '1 minute ago';
-                if($diff < 3600) return floor($diff / 60) . ' minutes ago';
-                if($diff < 7200) return '1 hour ago';
-                if($diff < 86400) return floor($diff / 3600) . ' hours ago';
-            }
-            if($day_diff == 1) return 'Yesterday';
-            if($day_diff < 7) return $day_diff . ' days ago';
-            if($day_diff < 31) return ceil($day_diff / 7) . ' weeks ago';
-            if($day_diff < 60) return 'last month';
-            $ret = date('F Y', $ts);
-            return ($ret == 'December 1969') ? '' : $ret;
-        }
-        else
-        {
-            $diff = abs($diff);
-            $day_diff = floor($diff / 86400);
-            if($day_diff == 0)
-            {
-                if($diff < 120) return 'in a minute';
-                if($diff < 3600) return 'in ' . floor($diff / 60) . ' minutes';
-                if($diff < 7200) return 'in an hour';
-                if($diff < 86400) return 'in ' . floor($diff / 3600) . ' hours';
-            }
-            if($day_diff == 1) return 'Tomorrow';
-            if($day_diff < 4) return date('l', $ts);
-            if($day_diff < 7 + (7 - date('w'))) return 'next week';
-            if(ceil($day_diff / 7) < 4) return 'in ' . ceil($day_diff / 7) . ' weeks';
-            if(date('n', $ts) == date('n') + 1) return 'next month';
-            $ret = date('F Y', $ts);
-            return ($ret == 'December 1969') ? '' : $ret;
-        }
+      if($diff < 120) return 'in a minute';
+      if($diff < 3600) return 'in ' . floor($diff / 60) . ' minutes';
+      if($diff < 7200) return 'in an hour';
+      if($diff < 86400) return 'in ' . floor($diff / 3600) . ' hours';
     }
+    if($day_diff == 1) return 'Tomorrow';
+    if($day_diff < 4) return date('l', $ts);
+    if($day_diff < 7 + (7 - date('w'))) return 'next week';
+    if(ceil($day_diff / 7) < 4) return 'in ' . ceil($day_diff / 7) . ' weeks';
+    if(date('n', $ts) == date('n') + 1) return 'next month';
+    $ret = date('F Y', $ts);
+    return ($ret == 'December 1969') ? '' : $ret;
+  }
+}
 
     // Returns an array representation of the given calendar month.
     // The array values are timestamps which allow you to easily format
@@ -306,14 +282,6 @@
 
         $trans = array('m' => $month_dd, 'd' => $day_dd, 'y' => $year_dd);
         return strtr($output_format, $trans);
-    }
-
-    // Redirects user to $url
-    function redirect($url = null)
-    {
-        if(is_null($url)) $url = $_SERVER['PHP_SELF'];
-        header("Location: $url");
-        exit();
     }
 
     // Ensures $str ends with a single /
@@ -784,13 +752,93 @@
         return isset($mime_types[$ext]) ? $mime_types[$ext] : $default;
     }
 
-    // echos formatted array for debugging
-    function pre($arr){
-    	if (is_array($arr)){
-    		echo "<pre>".print_r($arr, 1)."</pre>";
-    	} else {
-    		echo "<pre>".$arr."</pre>";
-    	}
+// echos formatted array for debugging
+function pre($arr){
+ 	if (is_array($arr)){
+ 		echo "<pre>".print_r($arr, 1)."</pre>";
+ 	} else {
+		echo "<pre>".$arr."</pre>";
+	}
+}
+
+/**
+ * Sends the 404 header and returns the 404 page
+ *
+ * @return Array 404 page
+ */
+function throw_404()
+{
+  //page does not exist
+  header("HTTP/1.0 404 Not Found");
+  
+  $db = Database::getDatabase(); 
+  $db->query("SELECT * FROM pages WHERE url='404' limit 1");
+  if(!$page = $db->getRows()){
+    
+    //No 404 page?
+    die("Pages table must have a 404 row");
+  }
+  
+  return $page[0];
+}
+  
+/**
+ * We need to know if the desired page actually exists,
+ * and throw the 4040 if it does not.
+ *
+ * @param Database $db                  Database connection
+ * @param Array $page                   Current Page
+ * @param Array $url_bits_remaining     URL bits that have not been accounted for
+ * @return Array related object
+ */
+function get_template($db, $page, $url_bits_remaining)
+{
+  //does this page does not support children?
+  if(!$page['supports_children']){
+    return false;
+  }
+    
+  if ($page['template'] == 'product_gallery') {
+    
+    if(count($url_bits_remaining) > 2){
+      return false;
+    }
+    
+    //family
+    $db->query('select * from families where url=\''.addslashes($url_bits_remaining[1]).'\' order by sort limit 1');
+    if(!$family = $db->getRows()){
+      return false;
     }
 
+    //product detail
+    if(isset($url_bits_remaining[2])){
+      //die('select * from products where url=\''.addslashes($url_bits_remaining[2]).'\' and family_id=\''.addslashes($family[0]['id']).'\' order by sort limit 1');
+      $db->query('select * from products where url=\''.addslashes($url_bits_remaining[2]).'\' and family_id=\''.addslashes($family[0]['id']).'\' order by sort limit 1');
+      if(!$product = $db->getRows()){
+        return false;
+      }
+      $product[0]['template'] = 'product_detail';
+      $product[0]['family_name'] = $family[0]['name'];
+      return $product[0];
+      
+    } else {
+      return $family[0];
+    }
+    
+    return false;
+  }
+}
+
+/**
+ * Clean's the output buffer and sends redirect header
+ *
+ * @param String $location
+ * @param Int $http_code
+ */
+function redirect($location, $http_code=302)
+{
+  ob_clean();
+  header('Location: '.$location, true, $http_code);
+  exit();
+}
 ?>
