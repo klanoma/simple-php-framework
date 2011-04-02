@@ -116,11 +116,11 @@
 
             $this->dbReadHost      = 'localhost';
             $this->dbWriteHost     = 'localhost';
-            $this->dbName          = 'gotwilly_nc';
-            $this->dbReadUsername  = 'gotwilly_nc';
-            $this->dbWriteUsername = 'gotwilly_nc';
-            $this->dbReadPassword  = 'm3z2aUMHNMCDXhb3';
-            $this->dbWritePassword = 'm3z2aUMHNMCDXhb3';
+            $this->dbName          = 'ninja_lacosta';
+            $this->dbReadUsername  = 'root';
+            $this->dbWriteUsername = 'root';
+            $this->dbReadPassword  = 'root';
+            $this->dbWritePassword = 'root';
             $this->dbOnError       = 'die';
             $this->dbEmailOnError  = false;
             $this->useDBSessions = true;
@@ -137,11 +137,11 @@
 
             $this->dbReadHost      = 'localhost';
             $this->dbWriteHost     = 'localhost';
-            $this->dbName          = 'gotwilly_nc';
-            $this->dbReadUsername  = 'gotwilly_nc';
-            $this->dbWriteUsername = 'gotwilly_nc';
-            $this->dbReadPassword  = 'm3z2aUMHNMCDXhb3';
-            $this->dbWritePassword = 'm3z2aUMHNMCDXhb3';
+            $this->dbName          = 'ninja_lacosta';
+            $this->dbReadUsername  = 'root';
+            $this->dbWriteUsername = 'root';
+            $this->dbReadPassword  = 'root';
+            $this->dbWritePassword = 'root';
             $this->dbOnError       = 'die';
             $this->dbEmailOnError  = false;
             $this->useDBSessions = true;

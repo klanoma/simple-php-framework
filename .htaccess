@@ -5,8 +5,13 @@ RewriteRule \.git - [F,L]
 
 <IfModule mod_rewrite.c>
 RewriteEngine On
+RewriteBase /
+#RewriteCond %{HTTP_HOST} !^lacosta.dev.ninjacrane.com$ [NC]
+#RewriteRule ^(.*)$ http://www.bobbeharris.com/$1 [L,R=301]
+
 ErrorDocument 404 /skel/index.php
 </IfModule>
 
 DirectoryIndex /skel/index.php
+
 
