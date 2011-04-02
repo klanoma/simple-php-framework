@@ -86,94 +86,94 @@ function time2str($ts)
   }
 }
 
-    // Returns an array representation of the given calendar month.
-    // The array values are timestamps which allow you to easily format
-    // and manipulate the dates as needed.
-    function calendar($month = null, $year = null)
+// Returns an array representation of the given calendar month.
+// The array values are timestamps which allow you to easily format
+// and manipulate the dates as needed.
+function calendar($month = null, $year = null)
+{
+  if(is_null($month)) $month = date('n');
+  if(is_null($year)) $year = date('Y');
+
+  $first = mktime(0, 0, 0, $month, 1, $year);
+  $last = mktime(23, 59, 59, $month, date('t', $first), $year);
+
+  $start = $first - (86400 * date('w', $first));
+  $stop = $last + (86400 * (7 - date('w', $first)));
+
+  $out = array();
+  while($start < $stop)
+  {
+    $week = array();
+    if($start > $last) break;
+    for($i = 0; $i < 7; $i++)
     {
-        if(is_null($month)) $month = date('n');
-        if(is_null($year)) $year = date('Y');
+      $week[$i] = $start;
+      $start += 86400;
+    }
+    $out[] = $week;
+  }
 
-        $first = mktime(0, 0, 0, $month, 1, $year);
-        $last = mktime(23, 59, 59, $month, date('t', $first), $year);
+  return $out;
+}
 
-        $start = $first - (86400 * date('w', $first));
-        $stop = $last + (86400 * (7 - date('w', $first)));
+// Processes mod_rewrite URLs into key => value pairs
+// See .htaccess for more info.
+function pick_off($grab_first = false, $sep = '/')
+{
+  $ret = array();
+  $arr = explode($sep, trim($_SERVER['REQUEST_URI'], $sep));
+  if($grab_first) $ret[0] = array_shift($arr);
+  while(count($arr) > 0)
+    $ret[array_shift($arr)] = array_shift($arr);
+  return (count($ret) > 0) ? $ret : false;
+}
 
-        $out = array();
-        while($start < $stop)
-        {
-            $week = array();
-            if($start > $last) break;
-            for($i = 0; $i < 7; $i++)
-            {
-                $week[$i] = $start;
-                $start += 86400;
-            }
-            $out[] = $week;
-        }
+// Creates a list of <option>s from the given database table.
+// table name, column to use as value, column(s) to use as text, default value(s) to select (can accept an array of values), extra sql to limit results
+function get_options($table, $val, $text, $default = null, $sql = '')
+{
+  $db = Database::getDatabase(true);
+  $out = '';
 
-        return $out;
+  $table = $db->escape($table);
+  $rows = $db->getRows("SELECT * FROM `$table` $sql");
+  foreach($rows as $row)
+  {
+    $the_text = '';
+    if(!is_array($text)) $text = array($text); // Allows you to concat multiple fields for display
+    foreach($text as $t)
+      $the_text .= $row[$t] . ' ';
+    $the_text = htmlspecialchars(trim($the_text));
+
+    if(!is_null($default) && $row[$val] == $default)
+      $out .= '<option value="' . htmlspecialchars($row[$val], ENT_QUOTES) . '" selected="selected">' . $the_text . '</option>';
+    elseif(is_array($default) && in_array($row[$val],$default))
+      $out .= '<option value="' . htmlspecialchars($row[$val], ENT_QUOTES) . '" selected="selected">' . $the_text . '</option>';
+    else
+      $out .= '<option value="' . htmlspecialchars($row[$val], ENT_QUOTES) . '">' . $the_text . '</option>';
+  }
+  return $out;
+}
+
+// More robust strict date checking for string representations
+function chkdate($str)
+{
+  // Requires PHP 5.2
+  if(function_exists('date_parse'))
+  {
+    $info = date_parse($str);
+    if($info !== false && $info['error_count'] == 0)
+    {
+      if(checkdate($info['month'], $info['day'], $info['year']))
+      return true;
     }
 
-    // Processes mod_rewrite URLs into key => value pairs
-    // See .htacess for more info.
-    function pick_off($grab_first = false, $sep = '/')
-    {
-        $ret = array();
-        $arr = explode($sep, trim($_SERVER['REQUEST_URI'], $sep));
-        if($grab_first) $ret[0] = array_shift($arr);
-        while(count($arr) > 0)
-            $ret[array_shift($arr)] = array_shift($arr);
-        return (count($ret) > 0) ? $ret : false;
-    }
+    return false;
+  }
 
-    // Creates a list of <option>s from the given database table.
-    // table name, column to use as value, column(s) to use as text, default value(s) to select (can accept an array of values), extra sql to limit results
-    function get_options($table, $val, $text, $default = null, $sql = '')
-    {
-        $db = Database::getDatabase(true);
-        $out = '';
-
-        $table = $db->escape($table);
-        $rows = $db->getRows("SELECT * FROM `$table` $sql");
-        foreach($rows as $row)
-        {
-            $the_text = '';
-            if(!is_array($text)) $text = array($text); // Allows you to concat multiple fields for display
-            foreach($text as $t)
-                $the_text .= $row[$t] . ' ';
-            $the_text = htmlspecialchars(trim($the_text));
-
-            if(!is_null($default) && $row[$val] == $default)
-                $out .= '<option value="' . htmlspecialchars($row[$val], ENT_QUOTES) . '" selected="selected">' . $the_text . '</option>';
-            elseif(is_array($default) && in_array($row[$val],$default))
-                $out .= '<option value="' . htmlspecialchars($row[$val], ENT_QUOTES) . '" selected="selected">' . $the_text . '</option>';
-            else
-                $out .= '<option value="' . htmlspecialchars($row[$val], ENT_QUOTES) . '">' . $the_text . '</option>';
-        }
-        return $out;
-    }
-
-    // More robust strict date checking for string representations
-    function chkdate($str)
-    {
-        // Requires PHP 5.2
-        if(function_exists('date_parse'))
-        {
-            $info = date_parse($str);
-            if($info !== false && $info['error_count'] == 0)
-            {
-                if(checkdate($info['month'], $info['day'], $info['year']))
-                    return true;
-            }
-
-            return false;
-        }
-
-        // Else, for PHP < 5.2
-        return strtotime($str);
-    }
+  // Else, for PHP < 5.2
+  return strtotime($str);
+}
 
     // Converts a date/timestamp into the specified format
     function dater($date = null, $format = null)
@@ -391,97 +391,97 @@ function time2str($ts)
             return false;
     }
 
-    // Grabs the contents of a remote URL. Can perform basic authentication if un/pw are provided.
-    function geturl($url, $username = null, $password = null)
-    {
-        if(function_exists('curl_init'))
-        {
-            $ch = curl_init();
-            if(!is_null($username) && !is_null($password))
-                curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Basic ' .  base64_encode("$username:$password")));
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-            $html = curl_exec($ch);
-            curl_close($ch);
-            return $html;
-        }
-        elseif(ini_get('allow_url_fopen') == true)
-        {
-            if(!is_null($username) && !is_null($password))
-                $url = str_replace("://", "://$username:$password@", $url);
-            $html = file_get_contents($url);
-            return $html;
-        }
-        else
-        {
-            // Cannot open url. Either install curl-php or set allow_url_fopen = true in php.ini
-            return false;
-        }
-    }
+// Grabs the contents of a remote URL. Can perform basic authentication if un/pw are provided.
+function geturl($url, $username = null, $password = null)
+{
+  if(function_exists('curl_init'))
+  {
+    $ch = curl_init();
+    if(!is_null($username) && !is_null($password))
+      curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Basic ' .  base64_encode("$username:$password")));
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+    $html = curl_exec($ch);
+    curl_close($ch);
+    return $html;
+  }
+  elseif(ini_get('allow_url_fopen') == true)
+  {
+    if(!is_null($username) && !is_null($password))
+      $url = str_replace("://", "://$username:$password@", $url);
+    $html = file_get_contents($url);
+      return $html;
+  }
+  else
+  {
+    // Cannot open url. Either install curl-php or set allow_url_fopen = true in php.ini
+    return false;
+  }
+}
 
-    // Returns the user's browser info.
-    // browscap.ini must be available for this to work.
-    // See the PHP manual for more details.
-    function browser_info()
-    {
-        $info    = get_browser(null, true);
-        $browser = $info['browser'] . ' ' . $info['version'];
-        $os      = $info['platform'];
-        $ip      = $_SERVER['REMOTE_ADDR'];
-        return array('ip' => $ip, 'browser' => $browser, 'os' => $os);
-    }
+// Returns the user's browser info.
+// browscap.ini must be available for this to work.
+// See the PHP manual for more details.
+function browser_info()
+{
+  $info    = get_browser(null, true);
+  $browser = $info['browser'] . ' ' . $info['version'];
+  $os      = $info['platform'];
+  $ip      = $_SERVER['REMOTE_ADDR'];
+  return array('ip' => $ip, 'browser' => $browser, 'os' => $os);
+}
 
     // Quick wrapper for preg_match
-    function match($regex, $str, $i = 0)
-    {
-        if(preg_match($regex, $str, $match) == 1)
-            return $match[$i];
-        else
-            return false;
-    }
+function match($regex, $str, $i = 0)
+{
+  if(preg_match($regex, $str, $match) == 1)
+    return $match[$i];
+  else
+    return false;
+}
 
-    // Sends an HTML formatted email
-    function send_html_mail($to, $subject, $msg, $from, $plaintext = '')
-    {
-        if(!is_array($to)) $to = array($to);
+// Sends an HTML formatted email
+function send_html_mail($to, $subject, $msg, $from, $plaintext = '')
+{
+  if(!is_array($to)) $to = array($to);
 
-        foreach($to as $address)
-        {
-            $boundary = uniqid(rand(), true);
+  foreach($to as $address)
+  {
+    $boundary = uniqid(rand(), true);
 
-            $headers  = "From: $from\n";
-            $headers .= "MIME-Version: 1.0\n";
-            $headers .= "Content-Type: multipart/alternative; boundary = $boundary\n";
-            $headers .= "This is a MIME encoded message.\n\n";
-            $headers .= "--$boundary\n" .
-                        "Content-Type: text/plain; charset=ISO-8859-1\n" .
-                        "Content-Transfer-Encoding: base64\n\n";
-            $headers .= chunk_split(base64_encode($plaintext));
-            $headers .= "--$boundary\n" .
-                        "Content-Type: text/html; charset=ISO-8859-1\n" .
-                        "Content-Transfer-Encoding: base64\n\n";
-            $headers .= chunk_split(base64_encode($msg));
-            $headers .= "--$boundary--\n" .
+    $headers  = "From: $from\n";
+    $headers .= "MIME-Version: 1.0\n";
+    $headers .= "Content-Type: multipart/alternative; boundary = $boundary\n";
+    $headers .= "This is a MIME encoded message.\n\n";
+    $headers .= "--$boundary\n" .
+      "Content-Type: text/plain; charset=ISO-8859-1\n" .
+      "Content-Transfer-Encoding: base64\n\n";
+    $headers .= chunk_split(base64_encode($plaintext));
+    $headers .= "--$boundary\n" .
+      "Content-Type: text/html; charset=ISO-8859-1\n" .
+      "Content-Transfer-Encoding: base64\n\n";
+    $headers .= chunk_split(base64_encode($msg));
+    $headers .= "--$boundary--\n" .
 
-            mail($address, $subject, '', $headers);
-        }
-    }
+    mail($address, $subject, '', $headers);
+  }
+}
 
-    // Returns the lat, long of an address via Yahoo!'s geocoding service.
-    // You'll need an App ID, which is available from here:
-    // http://developer.yahoo.com/maps/rest/V1/geocode.html
-    // Note: needs to be updated to use PlaceFinder instead.
-    function geocode($location, $appid)
-    {
-        $location = urlencode($location);
-        $appid    = urlencode($appid);
-        $data     = file_get_contents("http://local.yahooapis.com/MapsService/V1/geocode?output=php&appid=$appid&location=$location");
-        $data     = unserialize($data);
+// Returns the lat, long of an address via Yahoo!'s geocoding service.
+// You'll need an App ID, which is available from here:
+// http://developer.yahoo.com/maps/rest/V1/geocode.html
+// Note: needs to be updated to use PlaceFinder instead.
+function geocode($location, $appid)
+{
+  $location = urlencode($location);
+  $appid    = urlencode($appid);
+  $data     = file_get_contents("http://local.yahooapis.com/MapsService/V1/geocode?output=php&appid=$appid&location=$location");
+  $data     = unserialize($data);
 
-        if($data === false) return false;
+  if($data === false) return false;
 
-        $data = $data['ResultSet']['Result'];
+  $data = $data['ResultSet']['Result'];
 
   return array('lat' => $data['Latitude'], 'lng' => $data['Longitude']);
 }
