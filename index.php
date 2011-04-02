@@ -23,32 +23,36 @@ if($delimeter == ""){
 $url_parts = explode($delimeter, full_url());
 $url_array = explode("/", trim($url_parts[1], "/"));
 
+
 /**
  * @todo: support child pages
  */
 $url_lookup = $url_array[0]=="" ? "home" : $url_array[0];
+unset($url_array[0]);
+$url_bits_remaining = $url_array;
 
-
+//is there a page?
 $db = Database::getDatabase(); 
 $db->query("SELECT * FROM pages WHERE url='".addslashes($url_lookup)."' limit 1");
 if(!$page = $db->getRows()){
-  //page does not exist
-  header("HTTP/1.0 404 Not Found");
-  
-  $db = Database::getDatabase(); 
-  $db->query("SELECT * FROM pages WHERE url='404' limit 1");
-  if(!$page = $db->getRows()){
-    
-    //No 404 page?
-    die("Pages table must have a 404 row");
+  //this page does not exist
+  $page = throw_404();
+} else {
+  $page = $page[0];
+}
+
+//does this page support children?
+if(count($url_bits_remaining) > 0){
+  $related_object = get_template($db, $page, $url_bits_remaining);
+  if(count($url_bits_remaining) > 0 && $related_object === false){
+    //page does not exist
+    $page = throw_404();
   }
 }
-$page = $page[0];
-
 
 //redirect stuff
 if(strlen($page['redirect'])>1){
-  $redirect = "Location: $page[redirect]";
+  $redirect = 'Location: ' . $page[redirect];
   header($redirect); exit();
 }
 
@@ -57,9 +61,14 @@ foreach($page as $k=>$v){
   $page[$k] = preg_replace("/__BASEDIR__/", $BASEDIR, $v);
 }
 
+if(isset($related_object['template'])){
+  $page['template'] = $related_object['template'];
+}
+
 //we're all good
 header("HTTP/1.0 200 OK");
 
+ob_start();
 
 /**
  * ========================================================================================
@@ -95,4 +104,5 @@ TEMPLATE_FOOT;
 
 include("templates/footer.php"); 
 
+ob_flush();
 ?>
