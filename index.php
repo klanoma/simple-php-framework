@@ -1,7 +1,7 @@
 <?php
 
 require 'includes/master.inc.php';
-$BASEDIR = Config::get('basedir');
+$BASEDIR = WEB_ROOT;
 
 
 /**

@@ -103,7 +103,6 @@
             $this->dbOnError       = '';
             $this->dbEmailOnError  = false;
             $this->useDBSessions = false;
-            $this->basedir = "";
         }
 
         // Add code/variables to be run only on staging servers
@@ -124,7 +123,6 @@
             $this->dbOnError       = 'die';
             $this->dbEmailOnError  = false;
             $this->useDBSessions = true;
-            $this->basedir = "";
         }
 
         // Add code/variables to be run only on local (testing) servers
@@ -145,7 +143,6 @@
             $this->dbOnError       = 'die';
             $this->dbEmailOnError  = false;
             $this->useDBSessions = true;
-            $this->basedir = "/simple-php-framework";
         }
 
         public function whereAmI()
