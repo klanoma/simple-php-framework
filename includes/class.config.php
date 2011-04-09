@@ -93,13 +93,13 @@
 
             define('WEB_ROOT', '/');
 
-            $this->dbReadHost      = 'localhost';
-            $this->dbWriteHost     = 'localhost';
-            $this->dbName          = 'name';
-            $this->dbReadUsername  = 'name';
-            $this->dbWriteUsername = 'name';
-            $this->dbReadPassword  = 'xxx';
-            $this->dbWritePassword = 'xxx';
+            $this->dbReadHost      = 'xxx';
+            $this->dbWriteHost     = 'xxx';
+            $this->dbName          = 'xxx';
+            $this->dbReadUsername  = 'root';
+            $this->dbWriteUsername = 'root';
+            $this->dbReadPassword  = 'root';
+            $this->dbWritePassword = 'root';
             $this->dbOnError       = '';
             $this->dbEmailOnError  = false;
             $this->useDBSessions = false;
@@ -114,9 +114,9 @@
 
             define('WEB_ROOT', '');
 
-            $this->dbReadHost      = 'localhost';
-            $this->dbWriteHost     = 'localhost';
-            $this->dbName          = 'ninja_lacosta';
+            $this->dbReadHost      = 'xxx';
+            $this->dbWriteHost     = 'xxx';
+            $this->dbName          = 'xxx';
             $this->dbReadUsername  = 'root';
             $this->dbWriteUsername = 'root';
             $this->dbReadPassword  = 'root';
@@ -135,9 +135,9 @@
 
             define('WEB_ROOT', '');
 
-            $this->dbReadHost      = 'localhost';
-            $this->dbWriteHost     = 'localhost';
-            $this->dbName          = 'ninja_lacosta';
+            $this->dbReadHost      = 'xxx';
+            $this->dbWriteHost     = 'xxx';
+            $this->dbName          = 'xxx';
             $this->dbReadUsername  = 'root';
             $this->dbWriteUsername = 'root';
             $this->dbReadPassword  = 'root';

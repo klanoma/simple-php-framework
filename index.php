@@ -23,10 +23,6 @@ if($delimeter == ""){
 $url_parts = explode($delimeter, full_url());
 $url_array = explode("/", trim($url_parts[1], "/"));
 
-
-/**
- * @todo: support child pages
- */
 $url_lookup = $url_array[0]=="" ? "home" : $url_array[0];
 unset($url_array[0]);
 $url_bits_remaining = $url_array;
@@ -43,10 +39,19 @@ if(!$page = $db->getRows()){
 
 //does this page support children?
 if(count($url_bits_remaining) > 0){
-  $related_object = get_template($db, $page, $url_bits_remaining);
-  if(count($url_bits_remaining) > 0 && $related_object === false){
-    //page does not exist
-    $page = throw_404();
+  
+  //does this page have a child page?
+  $db->query("SELECT * FROM pages WHERE url=".$db->quote($url_bits_remaining[1])." and parent_id=".$db->quote($page['id'])." limit 1");
+  if($sub_page = $db->getRows()){
+    $page = $sub_page[0];
+  } else {
+  
+    //does it have a non-page child
+    $related_object = get_template($db, $page, $url_bits_remaining);
+    if(count($url_bits_remaining) > 0 && $related_object === false){
+      //page does not exist
+      $page = throw_404();
+    }
   }
 }
 
