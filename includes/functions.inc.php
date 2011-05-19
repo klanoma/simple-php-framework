@@ -754,11 +754,11 @@ function time2str($ts)
 
 // echos formatted array for debugging
 function pre($arr, $kill = false){
- 	if (is_array($arr)){
- 		echo "<pre>".print_r($arr, 1)."</pre>";
- 	} else {
-		echo "<pre>".$arr."</pre>";
-	}
+   if (is_array($arr)){
+     echo "<pre>".print_r($arr, 1)."</pre>";
+   } else {
+    echo "<pre>".$arr."</pre>";
+  }
   
   if($kill){
     exit();

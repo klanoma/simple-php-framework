@@ -112,7 +112,7 @@ p{
   height: 22px;
   text-align: center;
   zoom: 1;
-	*display:inline;
+  *display:inline;
 }
 
 #nav li:hover, #nav li.active{
