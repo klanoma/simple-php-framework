@@ -553,10 +553,9 @@ function time2str($ts)
 
     function framework_autoload($class_name)
     {
-        $file = DOC_ROOT . '/includes/class.' . strtolower($class_name) . '.php';
-        echo $file;
-        if (file_exists($file))
-            require $file;
+        $filename = DOC_ROOT . '/includes/class.' . strtolower($class_name) . '.php';
+        if(file_exists($filename))
+            require $filename;
     }
 
     // Returns a file's mimetype based on its extension
