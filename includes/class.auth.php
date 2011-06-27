@@ -9,7 +9,7 @@
         public $username;
         public $user;
         public $expiryDate;
-        public $loginUrl = '/login/'; // Where to direct users to login
+        public $loginUrl = '/login.php'; // Where to direct users to login
 
         private $nid;
         private $loggedIn;
@@ -155,6 +155,12 @@
 
         public static function createNewUser($username, $password = null)
         {
+	    $db = Database::getDatabase();
+
+            $user_exists = $db->getValue("SELECT COUNT(*) FROM users WHERE username = " . $db->quote($username));
+            if($user_exists > 0)
+                return false;
+
             if(is_null($password))
                 $password = Auth::generateStrongPassword();
 

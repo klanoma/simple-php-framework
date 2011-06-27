@@ -549,9 +549,13 @@ function time2str($ts)
     }
 
     // Class Autloader
-    function __autoload($class_name)
+    spl_autoload_register('framework_autoload');
+
+    function framework_autoload($class_name)
     {
-        require DOC_ROOT . '/includes/class.' . strtolower($class_name) . '.php';
+        $filename = DOC_ROOT . '/includes/class.' . strtolower($class_name) . '.php';
+        if(file_exists($filename))
+            require $filename;
     }
 
     // Returns a file's mimetype based on its extension

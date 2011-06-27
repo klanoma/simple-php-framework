@@ -3,12 +3,12 @@
 require 'includes/master.inc.php';
 $BASEDIR = WEB_ROOT;
 
-
 /**
  * ========================================================================================
  * Routing Stuff
  * ========================================================================================
  */
+
 
 //remove double slash and force final slash and remove home in url
 if(preg_match("/\/\/+/", full_url()) || !preg_match("/\/$/", full_url()) || preg_match("/home/", full_url())){
