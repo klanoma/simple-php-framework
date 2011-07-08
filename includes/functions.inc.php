@@ -362,6 +362,15 @@ function time2str($ts)
         return isset($matches[1]) ? $matches[1] : false;
     }
 
+	// Inserts a string within another string at a specified location
+	function str_insert($needle, $haystack, $location)
+	{
+	   $front = substr($haystack, 0, $location);
+	   $back  = substr($haystack, $location);
+
+	   return $front . $needle . $back;
+	}
+
     // Outputs a filesize in human readable format.
     function bytes2str($val, $round = 0)
     {
