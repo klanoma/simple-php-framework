@@ -28,7 +28,7 @@ unset($url_array[0]);
 $url_bits_remaining = $url_array;
 
 //is there a page?
-$db = Database::getDatabase(); 
+$db = Database::getDatabase();
 $db->query("SELECT * FROM pages WHERE url='".addslashes($url_lookup)."' limit 1");
 if(!$page = $db->getRows()){
   //this page does not exist
@@ -39,13 +39,13 @@ if(!$page = $db->getRows()){
 
 //does this page support children?
 if(count($url_bits_remaining) > 0){
-  
+
   //does this page have a child page?
   $db->query("SELECT * FROM pages WHERE url=".$db->quote($url_bits_remaining[1])." and parent_id=".$db->quote($page['id'])." limit 1");
   if($sub_page = $db->getRows()){
     $page = $sub_page[0];
   } else {
-  
+
     //does it have a non-page child
     $related_object = get_template($db, $page, $url_bits_remaining);
     if(count($url_bits_remaining) > 0 && $related_object === false){
@@ -107,7 +107,7 @@ TEMPLATE_FOOT;
  * ========================================================================================
  */
 
-include("templates/footer.php"); 
+include("templates/footer.php");
 
 ob_flush();
 ?>

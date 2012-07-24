@@ -1,7 +1,7 @@
 <?php
 
- $year = date("Y");
- 
+$year = date("Y");
+
 echo<<<FOOTER
       <div id="footer">
         Copyright &copy; $year Customer Name. All rights reserved.

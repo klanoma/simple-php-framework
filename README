@@ -1,9 +1,9 @@
 KLANOMA EXTENSION OF SIMPLE PHP FRAMEWORK
 
 
-This is the PHP framework I use for freelance development projects. It is 
-an extension of the Simple PHP Framework (SPF) developed by Tyler Hall and available 
-at https://github.com/tylerhall/simple-php-framework. Most class files are 
+This is the PHP framework I use for freelance development projects. It is
+an extension of the Simple PHP Framework (SPF) developed by Tyler Hall and available
+at https://github.com/tylerhall/simple-php-framework. Most class files are
 from the SPF, and I contributed the routing code (using .htaccess rewrite rules),
 pages database table, and templating scheme.
 
@@ -19,7 +19,7 @@ TODO's
   *  Use caching so pages table isn't queried on every http request
   *  Allow sub pages in routing
   *  Thoroughly document in phpDocumentor syntax
-  
+
 Have fun,
   Will Youmans
   github.com/klanoma

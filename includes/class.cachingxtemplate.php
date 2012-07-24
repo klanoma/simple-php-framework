@@ -93,11 +93,11 @@ class CachingXTemplate extends XTemplate {
    * Override of parent constructor
    *
    * @access public
-     * @param string $file Template file to work on
-     * @param string $tpldir Location of template files (useful for keeping files outside web server root)
-     * @param array $files Filenames lookup
-     * @param string $mainblock Name of main block in the template
-     * @param boolean $autosetup If true, run setup() as part of constuctor
+   * @param string $file Template file to work on
+   * @param string $tpldir Location of template files (useful for keeping files outside web server root)
+   * @param array $files Filenames lookup
+   * @param string $mainblock Name of main block in the template
+   * @param boolean $autosetup If true, run setup() as part of constuctor
    * @param int $cache_expiry Seconds to cache for
    * @param string $cache_unique Unique file id (e.g. session_id())
    * @param string $cache_dir Cache folder
@@ -165,8 +165,8 @@ class CachingXTemplate extends XTemplate {
    * Override of parent assign method
    *
    * @access public
-     * @param string $name Variable to assign $val to
-     * @param string / array $val Value to assign to $name
+   * @param string $name Variable to assign $val to
+   * @param string / array $val Value to assign to $name
    * @param boolean $magic_quotes
    */
   public function assign ($name, $val = '', $magic_quotes = false) {
@@ -179,9 +179,9 @@ class CachingXTemplate extends XTemplate {
   /**
    * Override of parent assign_file method
    *
-     * @access public
-     * @param string $name Variable to assign $val to
-     * @param string / array $val Values to assign to $name
+   * @access public
+   * @param string $name Variable to assign $val to
+   * @param string / array $val Values to assign to $name
    */
   public function assign_file ($name, $val = '') {
 
@@ -193,8 +193,8 @@ class CachingXTemplate extends XTemplate {
   /**
    * Override of parent parse method
    *
-     * @access public
-     * @param string $bname Block name to parse
+   * @access public
+   * @param string $bname Block name to parse
    * @param int $cache_expiry Seconds to cache block for
    */
   public function parse ($bname, $cache_expiry = 0) {
@@ -213,9 +213,9 @@ class CachingXTemplate extends XTemplate {
   /**
    * Override of parent text method
    *
-     * @access public
-     * @param string $bname Block name to return
-     * @return string
+   * @access public
+   * @param string $bname Block name to return
+   * @return string
    */
   public function text ($bname = '') {
 

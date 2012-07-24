@@ -1,19 +1,19 @@
 <?php
- 
+
 /* ------------------------------------------------------------- */
 /* URL Router class */
 /* Taken from:
    http://blog.sosedoff.com/2009/07/04/simpe-php-url-routing-controller/
 */
 /* ------------------------------------------------------------- */
- 
+
 class Router {
   static protected $instance;
   static protected $controller;
   static protected $action;
   static protected $params;
   static protected $rules;
- 
+
   public static function getInstance() {
     if (isset(self::$instance) and (self::$instance instanceof self)) {
       return self::$instance;
@@ -22,20 +22,20 @@ class Router {
       return self::$instance;
     }
   }
- 
+
   private static function arrayClean($array) {
     foreach($array as $key => $value) {
       if (strlen($value) == 0) unset($array[$key]);
-    }  
+    }
   }
- 
-  private static function ruleMatch($rule, $data) {    
+
+  private static function ruleMatch($rule, $data) {
     $ruleItems = explode('/',$rule); self::arrayClean(&$ruleItems);
     $dataItems = explode('/',$data); self::arrayClean(&$dataItems);
- 
+
     if (count($ruleItems) == count($dataItems)) {
       $result = array();
- 
+
       foreach($ruleItems as $ruleKey => $ruleValue) {
         if (preg_match('/^:[\w]{1,}$/',$ruleValue)) {
           $ruleValue = substr($ruleValue,1);
@@ -47,22 +47,22 @@ class Router {
           }
         }
       }
- 
+
       if (count($result) > 0) return $result;
       unset($result);
     }
     return false;
   }
- 
+
   private static function defaultRoutes($url) {
     // process default routes
     $items = explode('/',$url);
- 
+
     // remove empty blocks
     foreach($items as $key => $value) {
       if (strlen($value) == 0) unset($items[$key]);
     }
- 
+
     // extract data
     if (count($items)) {
       self::$controller = array_shift($items);
@@ -70,19 +70,19 @@ class Router {
       self::$params = $items;
     }
   }
- 
+
   protected function __construct() {
     self::$rules = array();
   }
- 
+
   public static function init() {
     $url = $_SERVER['REQUEST_URI'];
     $isCustom = false;
- 
+
     if (count(self::$rules)) {
       foreach(self::$rules as $ruleKey => $ruleData) {
         $params = self::ruleMatch($ruleKey,$url);
-        if ($params) {          
+        if ($params) {
           self::$controller = $ruleData['controller'];
           self::$action = $ruleData['action'];
           self::$params = $params;
@@ -91,18 +91,18 @@ class Router {
         }
       }
     }
- 
+
     if (!$isCustom) self::defaultRoutes($url);
- 
+
     if (!strlen(self::$controller)) self::$controller = 'home';
     if (!strlen(self::$action)) self::$action = 'index';
   }
- 
+
   public static function addRule($rule, $target) {
     self::$rules[$rule] = $target;
   }
- 
- 
+
+
   public static function getController() { return self::$controller; }
   public static function getAction() { return self::$action; }
   public static function getParams() { return self::$params; }

@@ -1,4 +1,4 @@
-<?PHP
+<?php
     class Auth
     {
         const SALT = 'insert some random text here';
